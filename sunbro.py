@@ -17,7 +17,6 @@ class FindElement(Selector):
         """Performs the actual search.
 
         `element` is a driver or WebElement"""
-        #import pdb; pdb.set_trace()
         return element.find_element(self._by, self._value)
 
 
