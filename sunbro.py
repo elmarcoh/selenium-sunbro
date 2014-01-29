@@ -45,7 +45,15 @@ class PageMetaclass(type):
 
 
 class Page:
+    """Extend this class to generate page objects.
+
+    By adding Selector as attributes, web elements will be lazy loaded
+    as you request them as properties
+    """
     __metaclass__ = PageMetaclass
 
     def __init__(self, driver):
+        """
+        driver: selenium.webdriver
+        """
         self.driver = driver
