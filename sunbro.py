@@ -2,12 +2,13 @@ import sys
 from selenium.webdriver.common.by import By
 
 
-class Selector:
-    """Base selector"""
-    pass
+class Find(object):
+    def __init__(self, selector, within=None):
+        self._selector = selector
+        self.within = within
 
 
-class FindElement(Selector):
+class FindElement(Find):
     """Abstraction for selenium find_element"""
 
     def __init__(self, by, value):
@@ -28,15 +29,14 @@ class MetaFind(type):
 
         by = attrs.pop('_by')
 
-        def find(self, root_element):
-            return root_element.find_element(by, self._value)
+        def find(self, root):
+            return root.find_element(by, self._selector)
 
         def init(self, value):
             self._value = value
 
-        attrs['__init__'] = init
         attrs['find'] = find
-        return type.__new__(cls, classname, (Selector,) + bases, attrs)
+        return type.__new__(cls, classname, (Find,) + bases, attrs)
 
 
 class MetaFindAll(type):
@@ -49,12 +49,8 @@ class MetaFindAll(type):
         def find(self, root_element):
             return root_element.find_elements(by, self._value)
 
-        def init(self, value):
-            self._value = value
-
-        attrs['__init__'] = init
         attrs['find'] = find
-        return type.__new__(cls, classname, (Selector,) + bases, attrs)
+        return type.__new__(cls, classname, (Find,) + bases, attrs)
 
 
 #FindByClass = MetaFind('FindByClassName', (), {
@@ -119,7 +115,13 @@ for name, by in selectors.items():
 
 def decorated_find(key):
     def getter(self):
-        return getattr(self, key).find(self._driver)
+        finder = getattr(self, key)
+        driver = self._driver
+        if finder.within:
+            root = getattr(self, finder.within).find(driver)
+        else:
+            root = driver
+        finder.find(root)
     return getter
 
 
@@ -142,7 +144,7 @@ class PageMetaclass(type):
             items = iter(attrs.items())
 
         for k, v in items:
-            if isinstance(v, Selector):
+            if isinstance(v, Find):
                 _k = '_' + k
                 final_attrs[_k] = v
                 final_attrs[k] = property(decorated_find(_k))
@@ -158,7 +160,7 @@ Page = PageMetaclass('Page', (BasePage, ), {})
 #class Page:
 #    """Extend this class to generate page objects.
 #
-#    By adding Selector as attributes, web elements will be lazy loaded
+#    By adding Find as attributes, web elements will be lazy loaded
 #    as you request them as properties
 #    """
 #    __metaclass__ = PageMetaclass
