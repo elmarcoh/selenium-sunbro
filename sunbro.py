@@ -21,10 +21,10 @@ class FindElement(Selector):
         return element.find_element(self._by, self._value)
 
 
-class MetaFinder(type):
+class MetaFind(type):
     """Selenium selector metaclass"""
 
-    def __init__(cls, classname, bases, attrs):
+    def __new__(cls, classname, bases, attrs):
 
         by = attrs.pop('_by')
 
@@ -36,17 +36,85 @@ class MetaFinder(type):
 
         attrs['__init__'] = init
         attrs['find'] = find
-        return type.__init__(cls, classname, (Selector,) + bases, attrs)
+        return type.__new__(cls, classname, (Selector,) + bases, attrs)
 
 
-FindByClassName = MetaFinder('FindByClassName', (), {'_by': By.CLASS_NAME})
-FindByCSS = MetaFinder('FindByCSS', (), {'_by': By.CSS_SELECTOR})
-FindById = MetaFinder('FindById', (), {'_by': By.ID})
-FindByLinkText = MetaFinder('FindByLinkText', (), {'_by': By.LINK_TEXT})
-FindByName = MetaFinder('FindByName', (), {'_by': By.NAME})
-FindByPartialLinkText = MetaFinder('FindByPartialLinkText', (), {'_by': By.PARTIAL_LINK_TEXT})
-FindByTag = MetaFinder('FindByTag', (), {'_by': By.TAG_NAME})
-FindByXPath = MetaFinder('FindByXPath', (), {'_by': By.XPATH})
+class MetaFindAll(type):
+    """Selenium selector metaclass"""
+
+    def __new__(cls, classname, bases, attrs):
+
+        by = attrs.pop('_by')
+
+        def find(self, root_element):
+            return root_element.find_elements(by, self._value)
+
+        def init(self, value):
+            self._value = value
+
+        attrs['__init__'] = init
+        attrs['find'] = find
+        return type.__new__(cls, classname, (Selector,) + bases, attrs)
+
+
+#FindByClass = MetaFind('FindByClassName', (), {
+#    '_by': By.CLASS_NAME,
+#    '__doc__': "Lazy find a web element by it's class",
+#})
+#
+#FindByCSS = MetaFind('FindByCSS', (), {
+#    '_by': By.CSS_SELECTOR,
+#    '__doc__': "Lazy find a web element by a CSS selector",
+#})
+#
+#FindById = MetaFind('FindById', (), {
+#    '_by': By.ID,
+#    '__doc__': "Lazy find a web element by it's id",
+#})
+#
+#FindByLinkText = MetaFind('FindByLinkText', (), {
+#    '_by': By.LINK_TEXT,
+#    '__doc__': "Lazy find a web element by the exact link text",
+#})
+#
+#FindByName = MetaFind('FindByName', (), {
+#    '_by': By.NAME,
+#    '__doc__': "Lazy find a web element by the field name",
+#})
+#
+#FindByPartialLinkText = MetaFind('FindByPartialLinkText', (), {
+#    '_by': By.PARTIAL_LINK_TEXT,
+#    '__doc__': "Lazy find a web element by part of the link's text",
+#})
+#
+#FindByTag = MetaFind('FindByTag', (), {
+#    '_by': By.TAG_NAME,
+#    '__doc__': "Lazy find a web element by it's tag name",
+#})
+#
+#FindByXPath = MetaFind('FindByXPath', (), {
+#    '_by': By.XPATH,
+#    '__doc__': "Lazy find a web element by an XPath",
+#})
+
+selectors = {
+    'Class': By.CLASS_NAME,
+    'CSS': By.CSS_SELECTOR,
+    'ID': By.ID,
+    'LinkText': By.LINK_TEXT,
+    'Name': By.NAME,
+    'PartialLinkText': By.PARTIAL_LINK_TEXT,
+    'Tag': By.TAG_NAME,
+    'XPath': By.XPATH,
+}
+
+for name, by in selectors.items():
+    classname = 'FindBy' + name
+    selclass = MetaFind(classname, (), {'_by': by})
+    vars()[classname] = selclass
+    classname = 'FindAllBy' + name
+    selclass = MetaFindAll(classname, (), {'_by': by})
+    vars()[classname] = selclass
 
 
 def decorated_find(key):
