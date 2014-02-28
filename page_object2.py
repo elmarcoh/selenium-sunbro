@@ -3,7 +3,7 @@ from selenium import webdriver
 
 
 class YapoAdInsertPage(sunbro.Page):
-    form = sunbro.FindByTag('form')
+    form = sunbro.FindByName('formular')
     subject = sunbro.FindByCSS('input#subject', within='form')
     body = sunbro.FindByName('body')
     price = sunbro.FindByName('price')
@@ -18,6 +18,7 @@ if __name__ == '__main__':
     page = YapoAdInsertPage(driver)
     page.go()
     page.subject.send_keys('Praise the sun, bros!')
-    page.body.send_keys('...to summon one another as spirits, cross the gaps between the worlds, and engage in jolly co-operation!')
+    page.body.send_keys('...to summon one another as'
+                        ' spirits, cross the gaps between'
+                        ' the worlds, and engage in jolly co-operation!')
     page.price.send_keys('1231')
-    print(page.titles)

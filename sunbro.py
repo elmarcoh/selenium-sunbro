@@ -32,9 +32,6 @@ class MetaFind(type):
         def find(self, root):
             return root.find_element(by, self._selector)
 
-        def init(self, value):
-            self._value = value
-
         attrs['find'] = find
         return type.__new__(cls, classname, (Find,) + bases, attrs)
 
@@ -47,7 +44,7 @@ class MetaFindAll(type):
         by = attrs.pop('_by')
 
         def find(self, root_element):
-            return root_element.find_elements(by, self._value)
+            return root_element.find_elements(by, self._selector)
 
         attrs['find'] = find
         return type.__new__(cls, classname, (Find,) + bases, attrs)
@@ -113,15 +110,14 @@ for name, by in selectors.items():
     vars()[classname] = selclass
 
 
-def decorated_find(key):
+def decorated_find(finder):
     def getter(self):
-        finder = getattr(self, key)
         driver = self._driver
         if finder.within:
-            root = getattr(self, finder.within).find(driver)
+            root = getattr(self, finder.within)
         else:
             root = driver
-        finder.find(root)
+        return finder.find(root)
     return getter
 
 
@@ -145,9 +141,7 @@ class PageMetaclass(type):
 
         for k, v in items:
             if isinstance(v, Find):
-                _k = '_' + k
-                final_attrs[_k] = v
-                final_attrs[k] = property(decorated_find(_k))
+                final_attrs[k] = property(decorated_find(v))
             else:
                 final_attrs[k] = v
 
