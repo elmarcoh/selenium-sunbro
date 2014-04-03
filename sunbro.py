@@ -8,6 +8,19 @@ class Find(object):
         self.within = within
 
 
+class FindElements(Find):
+    """Abstraction for selenium find_elements"""
+
+    def __init__(self, by, value):
+        self._by = by
+        self._value = value
+
+    def find(self, element):
+        """Performs the actual search.
+
+        `element` is a driver or WebElement"""
+        return element.find_elements(self._by, self._value)
+
 class FindElement(Find):
     """Abstraction for selenium find_element"""
 
@@ -113,7 +126,7 @@ for name, by in selectors.items():
 def decorated_find(finder):
     def getter(self):
         driver = self._driver
-        if finder.within:
+        if getattr(finder, 'within', None):
             root = getattr(self, finder.within)
         else:
             root = driver
