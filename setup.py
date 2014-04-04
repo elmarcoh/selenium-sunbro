@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='selenium-sunbro',
-    version='0.01',
+    version='0.02',
     author='Marcos Sánchez',
     author_email='arkanus@gmail.com',
     description="Easily create page objects with a declarative syntax",
