@@ -1,3 +1,22 @@
+"""Handy module to create page objects.
+
+Sunbro is a module that allows the creation of page objects in a declarative
+way, so when wiriting tests you only have to worry about wiriting the actual
+test, instead of tricky selectors.
+
+Usage:
+    Page object classes must inherit from sunbro.Page class, and selectors
+    should be sublasses of Find.
+
+class MyAwesomePage(sunbro.Page):
+    title = sunbro.FindByTag('h1')
+    tricky_css = sunbro.FindByCSS('div.tricky p')
+    link = sunbro.FindByID('linky')
+
+
+page = MyAwesomePage.link.click()
+"""
+
 import sys
 from selenium.webdriver.common.by import By
 
@@ -20,6 +39,7 @@ class FindElements(Find):
 
         `element` is a driver or WebElement"""
         return element.find_elements(self._by, self._value)
+
 
 class FindElement(Find):
     """Abstraction for selenium find_element"""
@@ -61,47 +81,6 @@ class MetaFindAll(type):
 
         attrs['find'] = find
         return type.__new__(cls, classname, (Find,) + bases, attrs)
-
-
-#FindByClass = MetaFind('FindByClassName', (), {
-#    '_by': By.CLASS_NAME,
-#    '__doc__': "Lazy find a web element by it's class",
-#})
-#
-#FindByCSS = MetaFind('FindByCSS', (), {
-#    '_by': By.CSS_SELECTOR,
-#    '__doc__': "Lazy find a web element by a CSS selector",
-#})
-#
-#FindById = MetaFind('FindById', (), {
-#    '_by': By.ID,
-#    '__doc__': "Lazy find a web element by it's id",
-#})
-#
-#FindByLinkText = MetaFind('FindByLinkText', (), {
-#    '_by': By.LINK_TEXT,
-#    '__doc__': "Lazy find a web element by the exact link text",
-#})
-#
-#FindByName = MetaFind('FindByName', (), {
-#    '_by': By.NAME,
-#    '__doc__': "Lazy find a web element by the field name",
-#})
-#
-#FindByPartialLinkText = MetaFind('FindByPartialLinkText', (), {
-#    '_by': By.PARTIAL_LINK_TEXT,
-#    '__doc__': "Lazy find a web element by part of the link's text",
-#})
-#
-#FindByTag = MetaFind('FindByTag', (), {
-#    '_by': By.TAG_NAME,
-#    '__doc__': "Lazy find a web element by it's tag name",
-#})
-#
-#FindByXPath = MetaFind('FindByXPath', (), {
-#    '_by': By.XPATH,
-#    '__doc__': "Lazy find a web element by an XPath",
-#})
 
 selectors = {
     'Class': By.CLASS_NAME,
@@ -162,18 +141,4 @@ class PageMetaclass(type):
 
 
 Page = PageMetaclass('Page', (BasePage, ), {})
-
-
-#class Page:
-#    """Extend this class to generate page objects.
-#
-#    By adding Find as attributes, web elements will be lazy loaded
-#    as you request them as properties
-#    """
-#    __metaclass__ = PageMetaclass
-#
-#    def __init__(self, driver):
-#        """
-#        driver: selenium.webdriver
-#        """
-#        self.driver = driver
+Page.__doc__ = "Base class for page objects"
