@@ -27,5 +27,6 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
     ],
-    install_requires=['selenium']
+    install_requires=['selenium'],
+    test_suite="tests",
 )
