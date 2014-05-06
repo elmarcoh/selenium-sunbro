@@ -24,8 +24,11 @@ from selenium.webdriver.common.by import By
 class Find(object):
     def __init__(self, selector, within=None):
         self._selector = selector
-        self.within = within
+        self._within = within
 
+
+#TODO find metods should only receive the root element and work it's way
+#     through the hierarchy
 
 class FindElements(Find):
     """Abstraction for selenium find_elements"""
@@ -105,8 +108,8 @@ for name, by in selectors.items():
 def decorated_find(finder):
     def getter(self):
         driver = self._driver
-        if getattr(finder, 'within', None):
-            root = getattr(self, finder.within)
+        if finder._within:
+            root = getattr(self, finder._within)
         else:
             root = driver
         return finder.find(root)
@@ -114,9 +117,15 @@ def decorated_find(finder):
 
 
 class BasePage(object):
+    """Base page for page objects, you should not extend from this, use Page instead"""
     def __init__(self, driver):
         self._driver = driver
 
+    def fill_fields(self, **kwargs):
+        """Fills the fields referenced by kwargs keys and fill them with the value"""
+        for name, value in kwargs.items():
+            field = getattr(self, name)
+            field.send_keys(value)
 
 class PageMetaclass(type):
     """Metaclass that search for selenium selector objects on the
