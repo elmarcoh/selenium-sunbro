@@ -26,7 +26,6 @@ class Find(object):
         self._selector = selector
         self._within = within
 
-
 #TODO find metods should only receive the root element and work it's way
 #     through the hierarchy
 
@@ -63,10 +62,8 @@ class MetaFind(type):
 
     def __new__(cls, classname, bases, attrs):
 
-        by = attrs.pop('_by')
-
         def find(self, root):
-            return root.find_element(by, self._selector)
+            return root.find_element(self._by, self._selector)
 
         attrs['find'] = find
         return type.__new__(cls, classname, (Find,) + bases, attrs)
@@ -77,10 +74,8 @@ class MetaFindAll(type):
 
     def __new__(cls, classname, bases, attrs):
 
-        by = attrs.pop('_by')
-
         def find(self, root_element):
-            return root_element.find_elements(by, self._selector)
+            return root_element.find_elements(self._by, self._selector)
 
         attrs['find'] = find
         return type.__new__(cls, classname, (Find,) + bases, attrs)
@@ -127,26 +122,25 @@ class BasePage(object):
             field = getattr(self, name)
             field.send_keys(value)
 
+    def selector(self, fieldname):
+        """Gets a selector for the given page element as a tuple (by, selector)"""
+        finder = self._finders[fieldname]
+        return (finder._by, finder._selector)
+
 class PageMetaclass(type):
     """Metaclass that search for selenium selector objects on the
     class and makes them usable on the Page object
     """
 
     def __new__(cls, classname, bases, attrs):
-        final_attrs = {}
-
-        if sys.version < '3':
-            items = attrs.iteritems()
-        else:
-            items = iter(attrs.items())
-
-        for k, v in items:
+        finders = {}
+        for k, v in [i for i in attrs.items() if isinstance(i[1], Find)]:
             if isinstance(v, Find):
-                final_attrs[k] = property(decorated_find(v))
-            else:
-                final_attrs[k] = v
+                attrs[k] = property(decorated_find(v))
+                finders[k] = v
 
-        return type.__new__(cls, classname, bases, final_attrs)
+        attrs['_finders'] = finders
+        return type.__new__(cls, classname, bases, attrs)
 
 
 Page = PageMetaclass('Page', (BasePage, ), {})

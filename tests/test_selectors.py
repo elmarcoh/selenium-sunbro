@@ -26,3 +26,8 @@ class TestSimplePageObject(unittest.TestCase):
                             ' the worlds, and engage in jolly co-operation!')
         page.price.send_keys('1231')
         driver.quit()
+
+    def test_get_selector(self):
+        page = YapoAdInsertPage(None)
+        self.assertEqual(('css selector', 'input#subject'),
+                         page.selector('subject'))
