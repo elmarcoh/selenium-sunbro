@@ -16,16 +16,20 @@ class YapoAdInsertPage(sunbro.Page):
 
 class TestSimplePageObject(unittest.TestCase):
 
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+
+    def tearDown(self):
+        self.driver.quit()
+
     def test_form_fill(self):
-        driver = webdriver.Firefox()
-        page = YapoAdInsertPage(driver)
+        page = YapoAdInsertPage(self.driver)
         page.go()
         page.subject.send_keys('Praise the sun, bros!')
         page.body.send_keys('...to summon one another as'
                             ' spirits, cross the gaps between'
                             ' the worlds, and engage in jolly co-operation!')
         page.price.send_keys('1231')
-        driver.quit()
 
     def test_get_selector(self):
         page = YapoAdInsertPage(None)
