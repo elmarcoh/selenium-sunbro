@@ -35,6 +35,7 @@ class FindElements(Find):
     def __init__(self, by, value):
         self._by = by
         self._value = value
+        super(FindElements, self).__init__(None)
 
     def find(self, element):
         """Performs the actual search.
@@ -49,6 +50,7 @@ class FindElement(Find):
     def __init__(self, by, value):
         self._by = by
         self._value = value
+        super(FindElement, self).__init__(None)
 
     def find(self, element):
         """Performs the actual search.
