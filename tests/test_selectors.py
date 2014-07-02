@@ -1,5 +1,6 @@
 import sunbro
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 import unittest
 
 
@@ -10,6 +11,8 @@ class YapoAdInsertPage(sunbro.Page):
     price = sunbro.FindByName('price', within='form')
     titles = sunbro.FindAllByCSS('.title')
 
+    advice = sunbro.FindElement(By.CSS_SELECTOR, 'ul.type1')
+
     def go(self):
         self._driver.get('http://www2.yapo.cl/ai')
 
@@ -17,7 +20,7 @@ class YapoAdInsertPage(sunbro.Page):
 class TestSimplePageObject(unittest.TestCase):
 
     def setUp(self):
-        self.driver = webdriver.Firefox()
+        self.driver = webdriver.PhantomJS()
 
     def tearDown(self):
         self.driver.quit()
@@ -35,3 +38,7 @@ class TestSimplePageObject(unittest.TestCase):
         page = YapoAdInsertPage(None)
         self.assertEqual(('css selector', 'input#subject'),
                          page.selector('subject'))
+
+    def test_get_old_selector(self):
+        page = YapoAdInsertPage(None)
+        self.assertEqual(('css selector', 'ul.type1'), page.selector('advice'))

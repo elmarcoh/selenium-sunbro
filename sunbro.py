@@ -17,7 +17,6 @@ class MyAwesomePage(sunbro.Page):
 page = MyAwesomePage.link.click()
 """
 
-import sys
 from selenium.webdriver.common.by import By
 
 
@@ -26,37 +25,36 @@ class Find(object):
         self._selector = selector
         self._within = within
 
-#TODO find metods should only receive the root element and work it's way
+
+# TODO find metods should only receive the root element and work it's way
 #     through the hierarchy
 
 class FindElements(Find):
     """Abstraction for selenium find_elements"""
 
-    def __init__(self, by, value):
+    def __init__(self, by, selector):
         self._by = by
-        self._value = value
-        super(FindElements, self).__init__(None)
+        super(FindElements, self).__init__(selector)
 
     def find(self, element):
         """Performs the actual search.
 
         `element` is a driver or WebElement"""
-        return element.find_elements(self._by, self._value)
+        return element.find_elements(self._by, self._selector)
 
 
 class FindElement(Find):
     """Abstraction for selenium find_element"""
 
-    def __init__(self, by, value):
+    def __init__(self, by, selector):
         self._by = by
-        self._value = value
-        super(FindElement, self).__init__(None)
+        super(FindElement, self).__init__(selector)
 
     def find(self, element):
         """Performs the actual search.
 
         `element` is a driver or WebElement"""
-        return element.find_element(self._by, self._value)
+        return element.find_element(self._by, self._selector)
 
 
 class MetaFind(type):
@@ -114,20 +112,24 @@ def decorated_find(finder):
 
 
 class BasePage(object):
-    """Base page for page objects, you should not extend from this, use Page instead"""
+    """Base page for page objects, you should not extend from this,
+       use Page instead"""
     def __init__(self, driver):
         self._driver = driver
 
     def fill_fields(self, **kwargs):
-        """Fills the fields referenced by kwargs keys and fill them with the value"""
+        """Fills the fields referenced by kwargs keys and fill them with
+        the value"""
         for name, value in kwargs.items():
             field = getattr(self, name)
             field.send_keys(value)
 
     def selector(self, fieldname):
-        """Gets a selector for the given page element as a tuple (by, selector)"""
+        """Gets a selector for the given page element as a tuple
+        (by, selector)"""
         finder = self._finders[fieldname]
         return (finder._by, finder._selector)
+
 
 class PageMetaclass(type):
     """Metaclass that search for selenium selector objects on the
