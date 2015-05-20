@@ -4,10 +4,11 @@ from setuptools import setup
 
 setup(
     name='selenium-sunbro',
-    version='0.03',
+    version='0.0.3',
     author='Marcos Sánchez',
     author_email='arkanus@gmail.com',
     description="Easily create page objects with a declarative syntax",
+    long_description=open('README.md').read(),
     py_modules=['sunbro'],
     url='https://github.com/arkanus/selenium-sunbro',
     license='Mozilla Public License 2.0 (MPL 2.0)',
