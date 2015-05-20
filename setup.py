@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
-import sys
 from setuptools import setup
+import os
+
+ROOT = os.path.abspath(os.path.dirname(__file__))
+README = os.path.join(ROOT, 'README.md')
+
+try:
+    long_description = open(README).read()
+except IOError:
+    long_description = None
 
 setup(
     name='selenium-sunbro',
@@ -8,7 +16,7 @@ setup(
     author='Marcos Sánchez',
     author_email='arkanus@gmail.com',
     description="Easily create page objects with a declarative syntax",
-    long_description=open('README.md').read(),
+    long_description=long_description,
     py_modules=['sunbro'],
     url='https://github.com/arkanus/selenium-sunbro',
     license='Mozilla Public License 2.0 (MPL 2.0)',
