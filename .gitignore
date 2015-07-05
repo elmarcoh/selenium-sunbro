@@ -6,3 +6,4 @@
 /dist
 .*
 !.gitignore
+ghostdriver.log
