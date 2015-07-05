@@ -12,7 +12,7 @@ Sunbro is a module aimed to ease the creation of Page Objects by allowing them t
 		price = sunbro.FindElement('name', 'price')
 
 		def go(self):
-			self.driver.get('http://www2.yapo.cl/ai')
+			self._driver.get('http://www2.yapo.cl/ai')
 
 
 	if __name__ == '__main__':
