@@ -12,7 +12,7 @@ except IOError:
 
 setup(
     name='selenium-sunbro',
-    version='0.0.3',
+    version='0.0.4',
     author='Marcos Sánchez',
     author_email='arkanus@gmail.com',
     description="Easily create page objects with a declarative syntax",
@@ -36,6 +36,6 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
     ],
-    install_requires=['selenium'],
+    install_requires=['selenium', 'uiautomator'],
     test_suite="tests",
 )

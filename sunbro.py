@@ -80,6 +80,10 @@ class MetaFindAll(type):
         attrs['find'] = find
         return type.__new__(cls, classname, (Find,) + bases, attrs)
 
+By.IOS_UIAUTOMATION = '-ios uiautomation'
+By.ANDROID_UIAUTOMATOR = '-android uiautomator'
+By.ACCESSIBILITY_ID = 'accessibility id'
+
 selectors = {
     'Class': By.CLASS_NAME,
     'CSS': By.CSS_SELECTOR,
@@ -89,6 +93,9 @@ selectors = {
     'PartialLinkText': By.PARTIAL_LINK_TEXT,
     'Tag': By.TAG_NAME,
     'XPath': By.XPATH,
+    'IosUiAutomator' : By.IOS_UIAUTOMATION,
+    'AndroidUiAutomator' : By.ANDROID_UIAUTOMATOR,
+    'AccessibilityId' : By.ACCESSIBILITY_ID,
 }
 
 for name, by in selectors.items():
