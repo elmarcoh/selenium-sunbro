@@ -18,7 +18,19 @@ page = MyAwesomePage.link.click()
 """
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.command import Command
+from selenium.common.exceptions import WebDriverException
 
+
+def click(self):
+    try:
+        self._execute(Command.CLICK_ELEMENT)
+    except WebDriverException as e:
+        self.parent.execute_script("window.scrollTo({0}, {1})".format(self.location['x'], self.location['y']))
+        self.parent.execute_script("arguments[0].click()", self)
+
+WebElement.click = click
 
 class Find(object):
     def __init__(self, selector, within=None):
