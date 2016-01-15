@@ -36,6 +36,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
     ],
-    install_requires=['selenium', 'uiautomator'],
+    install_requires=['selenium'],
+    extras_require={'UIAutomator': ['uiautomator']},
     test_suite="tests",
 )
