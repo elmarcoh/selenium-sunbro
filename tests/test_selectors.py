@@ -1,7 +1,6 @@
 import sunbro
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-import unittest
+from . import TestCase
 
 
 class YapoAdInsertPage(sunbro.Page):
@@ -17,13 +16,7 @@ class YapoAdInsertPage(sunbro.Page):
         self._driver.get('http://www2.yapo.cl/ai')
 
 
-class TestSimplePageObject(unittest.TestCase):
-
-    def setUp(self):
-        self.driver = webdriver.PhantomJS()
-
-    def tearDown(self):
-        self.driver.quit()
+class TestSimplePageObject(TestCase):
 
     def test_form_fill(self):
         page = YapoAdInsertPage(self.driver)

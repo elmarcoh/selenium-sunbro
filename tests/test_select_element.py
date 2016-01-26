@@ -1,8 +1,7 @@
-from selenium import webdriver
 from sunbro.selectors import Select
 import os
 import sunbro
-import unittest
+from . import TestCase
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -14,13 +13,7 @@ class TestPage(sunbro.Page):
         self._driver.get('file://' + os.path.join(ROOT, 'test_page.html'))
 
 
-class TestSimplePageObject(unittest.TestCase):
-
-    def setUp(self):
-        self.driver = webdriver.Firefox()
-
-    def tearDown(self):
-        self.driver.quit()
+class TestSimplePageObject(TestCase):
 
     def test_select_by_value(self):
         """The <select> web element is correctly wrapped"""
