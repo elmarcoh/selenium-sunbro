@@ -1,16 +1,13 @@
 from sunbro.selectors import Select
-import os
 import sunbro
-from . import TestCase
-
-ROOT = os.path.abspath(os.path.dirname(__file__))
+from . import TestCase, TEST_PAGE
 
 
 class TestPage(sunbro.Page):
     select = Select(css='select')
 
     def go(self):
-        self._driver.get('file://' + os.path.join(ROOT, 'test_page.html'))
+        self._driver.get(TEST_PAGE)
 
 
 class TestSimplePageObject(TestCase):

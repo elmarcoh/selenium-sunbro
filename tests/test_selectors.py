@@ -1,37 +1,38 @@
 import sunbro
 from selenium.webdriver.common.by import By
-from . import TestCase
+from . import TestCase, TEST_PAGE
 
 
-class YapoAdInsertPage(sunbro.Page):
-    form = sunbro.FindByName('formular')
-    subject = sunbro.FindByCSS('input#subject', within='form')
-    body = sunbro.FindByName('body')
-    price = sunbro.FindByName('price', within='form')
-    titles = sunbro.FindAllByCSS('.title')
+class SamplePage(sunbro.Page):
+    form = sunbro.FindByID('form')
+    subject = sunbro.FindByCSS('input#textbox', within='form')
+    body = sunbro.FindByName('textarea')
 
     advice = sunbro.FindElement(By.CSS_SELECTOR, 'ul.type1')
 
+    submit = sunbro.FindByCSS('button')
+
     def go(self):
-        self._driver.get('http://www2.yapo.cl/ai')
+        self._driver.get(TEST_PAGE)
 
 
 class TestSimplePageObject(TestCase):
 
     def test_form_fill(self):
-        page = YapoAdInsertPage(self.driver)
+        page = SamplePage(self.driver)
         page.go()
         page.subject.send_keys('Praise the sun, bros!')
         page.body.send_keys('...to summon one another as'
                             ' spirits, cross the gaps between'
                             ' the worlds, and engage in jolly co-operation!')
-        page.price.send_keys('1231')
+
+        page.submit.click()
 
     def test_get_selector(self):
-        page = YapoAdInsertPage(None)
-        self.assertEqual(('css selector', 'input#subject'),
+        page = SamplePage(None)
+        self.assertEqual(('css selector', 'input#textbox'),
                          page.selector('subject'))
 
     def test_get_old_selector(self):
-        page = YapoAdInsertPage(None)
+        page = SamplePage(None)
         self.assertEqual(('css selector', 'ul.type1'), page.selector('advice'))

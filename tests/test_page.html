@@ -8,11 +8,60 @@
 </head>
 <body>
 
-	<p>Select element<p>
-	<select>
-		<option value="1">First</option>
-		<option value="2">Second</option>
-		<option value="3">Third</option>
-	</select>
+	<section id="form">
+
+	<form action="" method="get" accept-charset="utf-8" id="simple-form">
+		<ul>
+			<li>
+				<label for="simple-select">Select an element</label>
+				<select name="simple-select">
+					<option value="1">First</option>
+					<option value="2">Second</option>
+					<option value="3">Third</option>
+				</select>
+			</li>
+
+			<li>
+				<textarea name="textarea" id="simple-text-area" rows="8" cols="40">
+					Long text
+				</textarea>
+			</li>
+
+			<li>
+				<input type="text" name="textbox" id="textbox" value="Some Text!" />
+			</li>
+
+			<li>
+				<button type="submit" id="submit">Submit!</button>
+			</li>
+		</ul>
+
+	</form>
+
+	</section>
+
+
+	<section id="results">
+		<ul id="results-list">
+
+		</ul>
+	</section>
+
+	<script type="text/javascript" charset="utf-8">
+		var results = document.getElementById('results-list')
+		var showValue = function(element) {
+			var newElement = '<li id="' + element.name + '-result">' + element.value + '<\/li>\n';
+			results.innerHTML = results.innerHTML + newElement;
+		};
+
+		var form = document.getElementById('simple-form');
+		form.addEventListener("submit", function(e) {
+			e.preventDefault();
+			results.innerHTML = '';
+			[].slice.call(this.getElementsByTagName('select')).map(showValue);
+			[].slice.call(this.getElementsByTagName('input')).map(showValue);
+		});
+	</script>
+
 </body>
 </html>
